@@ -1,0 +1,23 @@
+version: v1beta1
+kind: Spicepod
+name: nginx
+
+datasets:
+  - from: s3://spiceai-demo-datasets/nginx/tickets/
+    name: nginx.tickets
+    description: Tracked issues for the Nginx project. Tickets from https://trac.nginx.org/nginx/report.
+    params:
+      file_format: csv
+      csv_schema_infer_max_records: 1
+    acceleration:
+      enabled: true
+
+  - from: ftp://ftp.spiceai.us/nginx/docs/
+    name: nginx.docs
+    description: Documentation of the Nginx project. https://nginx.org/en/docs/.
+    acceleration:
+      enabled: true
+    params:
+      file_format: md
+      ftp_user: spiceai
+      ftp_pass: ${secrets:SPICE_FTP_PASS}
