@@ -3,21 +3,68 @@ kind: Spicepod
 name: nginx
 
 datasets:
-  - from: s3://spiceai-demo-datasets/nginx/tickets/
-    name: nginx.tickets
-    description: Tracked issues for the Nginx project. Tickets from https://trac.nginx.org/nginx/report.
+  - from: github:github.com/nginx/nginx/issues
+    name: nginx.issues
+    description: Nginx GitHub issues from https://github.com/nginx/nginx
+    time_column: created_at
     params:
-      file_format: csv
-      csv_schema_infer_max_records: 1
+      github_client_id: ${secrets:GITHUB_CLIENT_ID}
+      github_private_key: ${secrets:GITHUB_PRIVATE_KEY}
+      github_installation_id: ${secrets:GITHUB_INSTALLATION_ID}
     acceleration:
       enabled: true
+      refresh_mode: full
+      refresh_check_interval: 4h
+      refresh_jitter_enabled: true
+      refresh_jitter_max: 15m
+    embeddings:
+      - column: title
+        column_pk:
+          - id
+        use: openai_embeddings
 
-  - from: ftp://ftp.spiceai.us/nginx/docs/
-    name: nginx.docs
-    description: Documentation of the Nginx project. https://nginx.org/en/docs/.
+  - from: github:github.com/nginx/nginx/pulls
+    name: nginx.pulls
+    description: Nginx GitHub pull requests from https://github.com/nginx/nginx
+    time_column: created_at
+    params:
+      github_client_id: ${secrets:GITHUB_CLIENT_ID}
+      github_private_key: ${secrets:GITHUB_PRIVATE_KEY}
+      github_installation_id: ${secrets:GITHUB_INSTALLATION_ID}
     acceleration:
       enabled: true
+      refresh_mode: full
+      refresh_check_interval: 4h
+      refresh_jitter_enabled: true
+      refresh_jitter_max: 15m
+    embeddings:
+      - column: title
+        column_pk:
+          - id
+        use: openai_embeddings
+
+  - from: github:github.com/nginx/nginx/commits
+    name: nginx.commits
+    description: Nginx GitHub commits from https://github.com/nginx/nginx
+    time_column: committed_date
     params:
-      file_format: md
-      ftp_user: spiceai
-      ftp_pass: ${secrets:SPICE_FTP_PASS}
+      github_client_id: ${secrets:GITHUB_CLIENT_ID}
+      github_private_key: ${secrets:GITHUB_PRIVATE_KEY}
+      github_installation_id: ${secrets:GITHUB_INSTALLATION_ID}
+    acceleration:
+      enabled: true
+      refresh_mode: append
+      refresh_check_interval: 4h
+      refresh_jitter_enabled: true
+      refresh_jitter_max: 15m
+    embeddings:
+      - column: message
+        column_pk:
+          - id
+        use: openai_embeddings
+
+embeddings:
+  - from: openai
+    name: openai_embeddings
+    params:
+      openai_api_key: ${ secrets:OPENAI_API_KEY }
