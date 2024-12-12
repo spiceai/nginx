@@ -17,11 +17,12 @@ datasets:
       refresh_check_interval: 4h
       refresh_jitter_enabled: true
       refresh_jitter_max: 15m
-    embeddings:
-      - column: title
-        column_pk:
-          - id
-        use: openai_embeddings
+    columns:
+      - name: title
+        embeddings:
+          - from: openai_embeddings
+            row_id:
+              - number
 
   - from: github:github.com/nginx/nginx/pulls
     name: nginx.pulls
@@ -37,11 +38,12 @@ datasets:
       refresh_check_interval: 4h
       refresh_jitter_enabled: true
       refresh_jitter_max: 15m
-    embeddings:
-      - column: title
-        column_pk:
-          - id
-        use: openai_embeddings
+    columns:
+      - name: title
+        embeddings:
+          - from: openai_embeddings
+            row_id:
+              - number
 
   - from: github:github.com/nginx/nginx/commits
     name: nginx.commits
@@ -57,11 +59,12 @@ datasets:
       refresh_check_interval: 4h
       refresh_jitter_enabled: true
       refresh_jitter_max: 15m
-    embeddings:
-      - column: message
-        column_pk:
-          - id
-        use: openai_embeddings
+    columns:
+      - name: message
+        embeddings:
+          - from: openai_embeddings
+            row_id:
+              - id
 
 embeddings:
   - from: openai
