@@ -2,6 +2,9 @@ version: v1beta1
 kind: Spicepod
 name: nginx
 
+runtime:
+  dataset_load_parallelism: 1
+
 datasets:
   - from: github:github.com/nginx/nginx/issues
     name: nginx.issues
